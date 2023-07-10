@@ -7,6 +7,8 @@ import base64
 from io import BytesIO
 import os
 import gc
+import datetime
+from PIL import Image
 
 from share_btn import community_icon_html, loading_icon_html, share_js
 
@@ -55,6 +57,18 @@ if enable_refiner:
 
 # NOTE: we do not have word list filtering in this gradio demo
 
+#获取当前北京时间
+utc_dt = datetime.datetime.utcnow()
+beijing_dt = utc_dt.astimezone(datetime.timezone(datetime.timedelta(hours=8)))
+formatted = beijing_dt.strftime("%Y-%m-%d_%H")
+print(f"北京时间: {beijing_dt.year}年{beijing_dt.month}月{beijing_dt.day}日 "
+      f"{beijing_dt.hour}时{beijing_dt.minute}分{beijing_dt.second}秒")
+#创建作品存放目录
+works_path = './drive/MyDrive/colab_data/Stable Diffusion XL 0.9/' + formatted
+if not os.path.exists(works_path):
+  os.makedirs(works_path)
+print('作品目录：' + works_path)
+
 is_gpu_busy = False
 def infer(prompt, negative, scale, samples=4, steps=50, refiner_strength=0.3):
     prompt, negative = [prompt] * samples, [negative] * samples
@@ -83,6 +97,14 @@ def infer(prompt, negative, scale, samples=4, steps=50, refiner_strength=0.3):
     for image in images:
         buffered = BytesIO()
         image.save(buffered, format="JPEG")
+        
+        utc_dt = datetime.datetime.utcnow()
+        beijing_dt = utc_dt.astimezone(datetime.timezone(datetime.timedelta(hours=8)))
+        formatted = beijing_dt.strftime("%Y-%m-%d_%H-%M-%S.%f")
+        result_path = works_path + '/' + formatted + '.png'
+        image.save(result_path)
+        print('作品：' + result_path)
+        
         img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
         
         image_b64 = (f"data:image/jpeg;base64,{img_str}")
@@ -413,4 +435,4 @@ Despite how impressive being able to turn text into image is, beware to the fact
                 """
             )
 
-block.queue().launch(share=share)
+block.queue().launch(debug=True, share=share)
