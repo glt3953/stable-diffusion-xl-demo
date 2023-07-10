@@ -64,7 +64,7 @@ formatted = beijing_dt.strftime("%Y-%m-%d_%H")
 print(f"北京时间: {beijing_dt.year}年{beijing_dt.month}月{beijing_dt.day}日 "
       f"{beijing_dt.hour}时{beijing_dt.minute}分{beijing_dt.second}秒")
 #创建作品存放目录
-works_path = './drive/MyDrive/colab_data/Stable Diffusion XL 0.9/' + formatted
+works_path = '../drive/MyDrive/colab_data/stable-diffusion-xl-0.9/' + formatted
 if not os.path.exists(works_path):
   os.makedirs(works_path)
 print('作品目录：' + works_path)
