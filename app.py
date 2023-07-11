@@ -95,15 +95,15 @@ def infer(prompt, negative, scale, samples=4, steps=50, refiner_strength=0.3):
         torch.cuda.empty_cache()
 
     for image in images:
-        buffered = BytesIO()
-        image.save(buffered, format="JPEG")
-        
         utc_dt = datetime.datetime.utcnow()
         beijing_dt = utc_dt.astimezone(datetime.timezone(datetime.timedelta(hours=8)))
         formatted = beijing_dt.strftime("%Y-%m-%d_%H-%M-%S.%f")
         result_path = works_path + '/' + formatted + '.png'
         image.save(result_path)
         print('作品：' + result_path)
+        
+        buffered = BytesIO()
+        image.save(buffered, format="JPEG")
         
         img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
         
